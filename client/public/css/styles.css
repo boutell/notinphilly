@@ -277,6 +277,9 @@ input[type*=submit], .btn, .btn-default {
     margin-right: 40px;
     z-index: -1;
 }
+.pac-container {
+  z-index: 2000;
+}
 /* Styles for screen 420px and less*/
 @media (max-width: 768px){
     .tooltip-zooming{

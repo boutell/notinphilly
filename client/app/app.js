@@ -9,7 +9,8 @@
       'ui.mask',
       'ngSanitize',
       'ui.grid',
-      'ui.grid.pagination'
+      'ui.grid.pagination',
+      'google.places'
     ])
 
     app.constant("APP_EVENTS", {

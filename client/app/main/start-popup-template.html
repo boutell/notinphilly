@@ -6,6 +6,10 @@
   </div>
   <div class="modal-body">
     <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12">
+        <input type="text" g-places-autocomplete ng-model="place" />
+      </div>
+      <!--
       <div class="col-xs-4 col-sm-4 col-md-4 min-padding-right">
         <input type="text" id="houseNumber" ng-model="houseNumber" class="form-control form-textbox" placeholder="House #">
       </div>
@@ -16,7 +20,8 @@
            <div ng-bind-html="item.name | highlight: $select.search"></div>
          </ui-select-choices>
        </ui-select>
-     </div>
+      </div>
+      -->
     </div>
     <div class="row offset">
       <div class="col-xs-6 min-padding-right">

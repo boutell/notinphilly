@@ -10,6 +10,8 @@
       $scope.errorShow = false;
       $scope.notFoundShow = false;
 
+      $scope.place = null;
+
       $scope.refreshZipCodes = function(search) {
         if(search)
         {
@@ -31,41 +33,44 @@
       };
 
       $scope.findStreet = function() {
-        var findStreetsUrl = '/api/streets/findstreets/' + $scope.streetName.selected.name + "/" + $scope.houseNumber;
-        $http.get(findStreetsUrl)
-                      .then(function(response) {
-                        if(response.data.streets.length > 0)
-                        {
-                          var firstStreet = response.data.streets[0];
+        if ($scope.place && $scope.place.address_components) {
+          var streetNumber = $scope.place.address_components[0].long_name;
+          var streetName = $scope.place.address_components[1].long_name;
+          var findStreetsUrl = '/api/streets/findstreets/' + streetName + "/" + streetNumber;
+          $http.get(findStreetsUrl)
+                        .then(function(response) {
+                          if(response.data.streets.length > 0)
+                          {
+                            var firstStreet = response.data.streets[0];
 
-                          $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
-                          mapService.goToStreet(firstStreet._id);
+                            $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
+                            mapService.goToStreet(firstStreet._id);
 
-                          $cookies.put(APP_CONSTS.FOUND_STREET, firstStreet._id);
+                            $cookies.put(APP_CONSTS.FOUND_STREET, firstStreet._id);
 
-                          $scope.streetName = {};
-                          $scope.zipCode = {};
-                          $scope.houseNumber = undefined;
+                            $scope.streetName = {};
+                            $scope.zipCode = {};
+                            $scope.houseNumber = undefined;
 
-                          $scope.errorShow = false;
+                            $scope.errorShow = false;
+                            $scope.notFoundShow = false;
+                            $uibModalInstance.dismiss('cancel');
+                          }
+                          else {
+                            $scope.errorShow = false;
+                            $scope.notFoundShow = true;
+                          }
+
+
+                        }, function(err){
+                          $scope.errorShow = true;
                           $scope.notFoundShow = false;
-                          $uibModalInstance.dismiss('cancel');
-                        }
-                        else {
-                          $scope.errorShow = false;
-                          $scope.notFoundShow = true;
-                        }
-
-
-                      }, function(err){
-                        $scope.errorShow = true;
-                        $scope.notFoundShow = false;
-                      });
-      };
+                        });
+        }
+      }
 
       $scope.isValidForSearch = function() {
-        if($scope.streetName && $scope.streetName.selected && $scope.houseNumber)
-        {
+        if ($scope.place && $scope.place.address_components) {
           return true;
         }
 
