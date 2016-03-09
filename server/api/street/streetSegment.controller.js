@@ -4,7 +4,7 @@ var StreetZipcodesModel = require('../street/streetZipcodes.model');
 var StreetNamesModel = require('../street/streetNames.model');
 var UserModel = require('../user/user.model');
 var NeighborhoodModel = require('../neighborhood/neighborhood.model');
-
+var regexpQuote = require('regexp-quote');
 
 var Schema = mongoose.Schema;
 
@@ -194,9 +194,19 @@ exports.findStreets = function(req, res, next) {
     var streetName = req.params.street;
     var houseNumber = req.params.house;
 
+    // Street names in the database don't have prefixes or suffixes
+    streetName = streetName.replace(/^([NSEW] )?(.*?)( (St|Av|Pl|Bl|Hw|Hwy))?$/, '$2');
+
     var blockPrefix = houseNumber.toString().length > 2 ? houseNumber.toString().slice(0, -2) : houseNumber;
-    var streetRegex = new RegExp(streetName, 'i');
-    var blockRegex = new RegExp(blockPrefix, 'i');
+
+    // TODO: performance of case insensitive, unrooted regexes = brute
+    // force search, but maybe there's not enough data for it to matter...
+
+    // Use regexp-quote module to prevent malicious input from producing
+    // crashes or non-terminating searches
+
+    var streetRegex = new RegExp(regexpQuote(streetName), 'i');
+    var blockRegex = new RegExp(regexpQuote(blockPrefix), 'i');
 
     StreetModel.find({  streetName: { $regex: streetRegex },
                         block: { $regex: blockRegex }

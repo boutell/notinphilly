@@ -34,8 +34,8 @@
 
       $scope.findStreet = function() {
         if ($scope.place && $scope.place.address_components) {
-          var streetNumber = $scope.place.address_components[0].long_name;
-          var streetName = $scope.place.address_components[1].long_name;
+          var streetNumber = $scope.place.address_components[0].short_name;
+          var streetName = $scope.place.address_components[1].short_name;
           var findStreetsUrl = '/api/streets/findstreets/' + streetName + "/" + streetNumber;
           $http.get(findStreetsUrl)
                         .then(function(response) {
